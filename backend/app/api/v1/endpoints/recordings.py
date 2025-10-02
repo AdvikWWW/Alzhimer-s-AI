@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import logging
@@ -6,7 +6,7 @@ import hashlib
 from datetime import datetime
 
 from app.core.database import get_db
-from app.models.models import AudioRecording, Session as SessionModel
+from app.models.models import AudioRecording, RecordingSession
 from app.core.config import settings
 from app.services.storage_service import storage_service
 

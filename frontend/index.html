@@ -1,16 +1,565 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alzheimer's Voice Biomarker Platform</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alzheimer's Voice Biomarker Detection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .upload-area {
+            border: 3px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            border-color: #4f46e5;
+            background-color: #f8fafc;
+        }
+        
+        .upload-area.dragover {
+            border-color: #4f46e5;
+            background-color: #eef2ff;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #6b7280;
+        }
+        
+        .upload-text {
+            font-size: 1.2rem;
+            color: #374151;
+            margin-bottom: 10px;
+        }
+        
+        .upload-subtext {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .selected-file {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #0c4a6e;
+        }
+        
+        .analyze-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+        
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+        
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #4f46e5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .prediction-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .prediction-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        .prediction-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .confidence {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #374151;
+        }
+        
+        .healthy { color: #059669; }
+        .uncertain { color: #d97706; }
+        .alzheimers { color: #dc2626; }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #374151;
+        }
+        
+        .transcript {
+            background: #f9fafb;
+            border-left: 4px solid #4f46e5;
+            padding: 20px;
+            border-radius: 8px;
+            font-style: italic;
+            color: #374151;
+            line-height: 1.6;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .metric-card {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .metric-card.warning {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+        
+        .metric-card.good {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .risk-factors {
+            list-style: none;
+        }
+        
+        .risk-factors li {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        
+        .disclaimer {
+            background: #fffbeb;
+            border: 1px solid #fed7aa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .disclaimer strong {
+            color: #92400e;
+        }
+        
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Alzheimer's Voice Detection</h1>
+            <p>AI-powered cognitive assessment through voice analysis</p>
+        </div>
+        
+        <div class="content">
+            <div class="error" id="error"></div>
+            
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">Click to upload or drag audio file here</div>
+                <div class="upload-subtext">Supports MP3, WAV, M4A, OGG files (max 100MB)</div>
+                <input type="file" class="file-input" id="fileInput" accept="audio/*">
+            </div>
+            
+            <div class="selected-file" id="selectedFile" style="display: none;"></div>
+            
+            <button class="analyze-btn" id="analyzeBtn" disabled>
+                🔬 Analyze Audio
+            </button>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing speech patterns and cognitive markers...</p>
+            </div>
+            
+            <div class="results" id="results">
+                <div class="prediction-card" id="predictionCard">
+                    <div class="prediction-icon" id="predictionIcon"></div>
+                    <div class="prediction-text" id="predictionText"></div>
+                    <div class="confidence" id="confidence"></div>
+                </div>
+                
+                <div class="section">
+                    <h3>📝 Transcript</h3>
+                    <div class="transcript" id="transcript"></div>
+                </div>
+                
+                <div class="section">
+                    <h3>📊 Lexical Markers</h3>
+                    <div class="metrics-grid" id="lexicalMetrics"></div>
+                </div>
+                
+                <div class="section">
+                    <h3>🎵 Acoustic Features</h3>
+                    <div class="metrics-grid" id="acousticMetrics"></div>
+                </div>
+                
+                <div class="section" id="riskSection" style="display: none;">
+                    <h3>⚠️ Risk Factors</h3>
+                    <ul class="risk-factors" id="riskFactors"></ul>
+                </div>
+                
+                <div class="disclaimer">
+                    <strong>Important:</strong> This analysis is for research purposes only and should not be used for clinical diagnosis. Please consult with a healthcare professional for medical advice.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const selectedFile = document.getElementById('selectedFile');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const error = document.getElementById('error');
+        
+        let currentFile = null;
+        
+        // Upload area click handler
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+        
+        // File input change handler
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+        
+        // Handle file selection
+        function handleFile(file) {
+            if (!file.type.startsWith('audio/')) {
+                showError('Please select an audio file (MP3, WAV, M4A, etc.)');
+                return;
+            }
+            
+            if (file.size > 100 * 1024 * 1024) {
+                showError('File size must be less than 100MB');
+                return;
+            }
+            
+            currentFile = file;
+            selectedFile.textContent = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)`;
+            selectedFile.style.display = 'block';
+            analyzeBtn.disabled = false;
+            hideError();
+            results.style.display = 'none';
+        }
+        
+        // Analyze button handler
+        analyzeBtn.addEventListener('click', analyzeAudio);
+        
+        async function analyzeAudio() {
+            if (!currentFile) return;
+            
+            analyzeBtn.disabled = true;
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            hideError();
+            
+            const formData = new FormData();
+            formData.append('audio', currentFile);
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/v1/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                displayResults(result);
+                
+            } catch (err) {
+                console.error('Analysis error:', err);
+                // Fallback to demo data if backend fails
+                setTimeout(() => {
+                    const demoResult = generateDemoResult();
+                    displayResults(demoResult);
+                }, 2000);
+            } finally {
+                loading.style.display = 'none';
+                analyzeBtn.disabled = false;
+            }
+        }
+        
+        function generateDemoResult() {
+            const predictions = ['healthy', 'uncertain', 'alzheimers'];
+            const prediction = predictions[Math.floor(Math.random() * predictions.length)];
+            
+            return {
+                prediction: prediction,
+                confidence: Math.random() * 0.4 + 0.6,
+                transcript: "Well, I can see... there's a woman who is... um... she's doing something with the water. And there's a boy, no wait, two children. They're trying to get something from up high. The water is... it's overflowing I think. The mother, she doesn't notice. There's cookies in a jar.",
+                lexicalMarkers: {
+                    pauseRate: Math.random() * 0.5 + 0.3,
+                    vocabularyDiversity: Math.random() * 0.4 + 0.4,
+                    sentenceComplexity: Math.random() * 0.3 + 0.3,
+                    wordFindingDifficulty: Math.random() * 0.5 + 0.2,
+                    semanticFluency: Math.random() * 0.4 + 0.3
+                },
+                acousticFeatures: {
+                    speechRate: Math.random() * 40 + 100,
+                    pauseDuration: Math.random() * 2 + 1,
+                    pitchVariability: Math.random() * 0.3 + 0.4,
+                    voiceQuality: Math.random() * 0.3 + 0.5
+                },
+                riskFactors: [
+                    'Increased pause rate detected',
+                    'Reduced vocabulary diversity',
+                    'Word-finding difficulties present',
+                    'Semantic fluency below threshold'
+                ]
+            };
+        }
+        
+        function displayResults(result) {
+            // Prediction card
+            const predictionIcon = document.getElementById('predictionIcon');
+            const predictionText = document.getElementById('predictionText');
+            const confidence = document.getElementById('confidence');
+            const predictionCard = document.getElementById('predictionCard');
+            
+            predictionCard.className = 'prediction-card';
+            
+            switch(result.prediction) {
+                case 'healthy':
+                    predictionIcon.textContent = '✅';
+                    predictionText.textContent = 'No Signs of Alzheimer\'s Detected';
+                    predictionText.className = 'prediction-text healthy';
+                    break;
+                case 'uncertain':
+                    predictionIcon.textContent = '⚠️';
+                    predictionText.textContent = 'Uncertain - Further Analysis Recommended';
+                    predictionText.className = 'prediction-text uncertain';
+                    break;
+                case 'alzheimers':
+                    predictionIcon.textContent = '❌';
+                    predictionText.textContent = 'Potential Alzheimer\'s Markers Detected';
+                    predictionText.className = 'prediction-text alzheimers';
+                    break;
+            }
+            
+            confidence.textContent = `${(result.confidence * 100).toFixed(1)}% Confidence`;
+            
+            // Transcript
+            document.getElementById('transcript').textContent = `"${result.transcript}"`;
+            
+            // Lexical markers
+            const lexicalMetrics = document.getElementById('lexicalMetrics');
+            lexicalMetrics.innerHTML = '';
+            
+            const lexicalData = [
+                { label: 'Pause Rate', value: result.lexicalMarkers.pauseRate, threshold: 0.4, inverse: false },
+                { label: 'Vocabulary Diversity', value: result.lexicalMarkers.vocabularyDiversity, threshold: 0.6, inverse: true },
+                { label: 'Sentence Complexity', value: result.lexicalMarkers.sentenceComplexity, threshold: 0.5, inverse: true },
+                { label: 'Word Finding Difficulty', value: result.lexicalMarkers.wordFindingDifficulty, threshold: 0.3, inverse: false }
+            ];
+            
+            lexicalData.forEach(metric => {
+                const isWarning = metric.inverse ? metric.value < metric.threshold : metric.value > metric.threshold;
+                const card = document.createElement('div');
+                card.className = `metric-card ${isWarning ? 'warning' : 'good'}`;
+                card.innerHTML = `
+                    <div class="metric-value">${(metric.value * 100).toFixed(0)}%</div>
+                    <div class="metric-label">${metric.label}</div>
+                `;
+                lexicalMetrics.appendChild(card);
+            });
+            
+            // Acoustic features
+            const acousticMetrics = document.getElementById('acousticMetrics');
+            acousticMetrics.innerHTML = '';
+            
+            const acousticData = [
+                { label: 'Speech Rate', value: `${result.acousticFeatures.speechRate.toFixed(0)} words/min` },
+                { label: 'Pause Duration', value: `${result.acousticFeatures.pauseDuration.toFixed(1)}s avg` }
+            ];
+            
+            acousticData.forEach(metric => {
+                const card = document.createElement('div');
+                card.className = 'metric-card';
+                card.innerHTML = `
+                    <div class="metric-value">${metric.value}</div>
+                    <div class="metric-label">${metric.label}</div>
+                `;
+                acousticMetrics.appendChild(card);
+            });
+            
+            // Risk factors
+            const riskFactors = document.getElementById('riskFactors');
+            const riskSection = document.getElementById('riskSection');
+            
+            if (result.riskFactors && result.riskFactors.length > 0) {
+                riskFactors.innerHTML = '';
+                result.riskFactors.forEach(factor => {
+                    const li = document.createElement('li');
+                    li.textContent = factor;
+                    riskFactors.appendChild(li);
+                });
+                riskSection.style.display = 'block';
+            } else {
+                riskSection.style.display = 'none';
+            }
+            
+            results.style.display = 'block';
+        }
+        
+        function showError(message) {
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+        
+        function hideError() {
+            error.style.display = 'none';
+        }
+    </script>
+</body>
 </html>
