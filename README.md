@@ -2,28 +2,71 @@
 
 A cutting-edge AI-powered platform that analyzes voice recordings to detect early signs of Alzheimer's disease using advanced machine learning, speech processing, and clinical research.
 
+## 🎉 **NEW: Enhanced System with Word-Level Analysis!**
+
+This system now includes:
+- ✅ **Word-by-word analysis** with 100+ advanced features
+- ✅ **Wav2Vec2 embeddings** for semantic representation
+- ✅ **Real trainable models** (no more placeholders!)
+- ✅ **Interactive Streamlit demo** with beautiful visualizations
+- ✅ **Intelligent scoring** with biomarker explanations
+- ✅ **Complete training pipeline** for your own audio data
+
+**See [ENHANCED_SYSTEM_GUIDE.md](ENHANCED_SYSTEM_GUIDE.md) for the complete guide!**
+
+---
+
 ## ✨ Features
 
 ### 🎯 Core Capabilities
 - **99% Accurate Transcription** - OpenAI Whisper integration for precise speech-to-text
-- **Real-Time ML Analysis** - RandomForest classifier trained on DementiaBank/ADReSS research patterns
+- **Word-Level Analysis** - Analyzes each word with timing, rhythm, and acoustic features
+- **Real-Time ML Analysis** - Ensemble models (RandomForest, XGBoost, GradientBoosting)
 - **Clinical-Grade Metrics** - Research-validated thresholds and biomarkers
 - **Comprehensive Results** - Detailed lexical, acoustic, and cognitive assessments
-- **Beautiful UI** - Modern, responsive interface with drag-and-drop audio upload
+- **Beautiful Interactive UI** - Streamlit demo with real-time visualizations
 
 ### 🔬 Research-Based Analysis
-- **Lexical Markers**: Pause rate, vocabulary diversity, sentence complexity, word-finding difficulty
-- **Acoustic Features**: Speech rate, pause duration, pitch variability, voice quality
-- **Risk Assessment**: Evidence-based prediction (Healthy/Uncertain/Alzheimer's) with confidence scores
+- **Acoustic Biomarkers**: Pitch, jitter, shimmer, formants, spectral entropy, MFCC deltas
+- **Linguistic Biomarkers**: Vocabulary diversity, semantic coherence, syntactic complexity
+- **Disfluency Biomarkers**: Pauses, repetitions, false starts, word-finding difficulty
+- **Timing Biomarkers**: Speech rate, articulation rate, word duration variability
+- **Deep Learning Features**: Wav2Vec2 embeddings, contextual representations
+- **Risk Assessment**: Evidence-based prediction with confidence scores and explanations
 - **Clinical Thresholds**: Based on DementiaBank and ADReSS dataset research
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Docker and Docker Compose
-- 4GB+ RAM recommended
+### **Option 1: Enhanced System (Recommended)**
 
-### Installation
+Use the new training pipeline and interactive demo:
+
+```bash
+# Clone repository
+git clone https://github.com/[your-username]/alzheimer-voice-detection.git
+cd alzheimer-voice-detection
+
+# Run quick start script
+./QUICK_START.sh  # Linux/Mac
+# or
+QUICK_START.bat   # Windows
+
+# Follow the on-screen instructions
+```
+
+**Then:**
+1. Prepare audio files (Alzheimer1.wav, Normal1.wav, etc.)
+2. Train models: `python scripts/train_model_with_data.py --data-dir data/`
+3. Run demo: `streamlit run scripts/streamlit_demo.py`
+
+**See [ENHANCED_SYSTEM_GUIDE.md](ENHANCED_SYSTEM_GUIDE.md) for detailed instructions!**
+
+---
+
+### **Option 2: Docker Deployment (Original)**
+
+For the full web application:
+
 ```bash
 git clone https://github.com/[your-username]/alzheimer-voice-detection.git
 cd alzheimer-voice-detection
@@ -34,6 +77,7 @@ docker-compose up --build
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
+- **Streamlit Demo**: `streamlit run backend/scripts/streamlit_demo.py`
 
 ## 🏗️ Architecture
 

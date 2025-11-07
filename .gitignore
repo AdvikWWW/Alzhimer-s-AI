@@ -31,6 +31,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+venv_new/
 
 # PyCharm
 .idea/
@@ -40,64 +41,73 @@ venv.bak/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*.ipynb
 
 # pyenv
 .python-version
 
-# Node.js
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
+# Data files
+data/raw_audio/
+data/processed/
+!data/README.md
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+# Model files
+models/*/
+!models/README.md
 
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
+# Logs and databases
+*.log
+*.sql
+*.sqlite
 
-# nyc test coverage
-.nyc_output
+# Audio files
+*.wav
+*.mp3
+*.m4a
+*.flac
+*.ogg
 
-# Dependency directories
-jspm_packages/
+# Temporary files
+*.tmp
+*.swp
+*~
 
-# Optional npm cache directory
-.npm
+# Environment variables
+.env
+.env.local
+.env.*.local
 
-# Optional eslint cache
-.eslintcache
+# Local development
+.DS_Store
+Thumbs.db
 
-# Optional REPL history
-.node_repl_history
+# Project specific
+recordings/
+!recordings/README.md
 
-# Output of 'npm pack'
-*.tgz
+# Training data
+*.npy
+*.npz
+*.pkl
+*.joblib
 
-# Yarn Integrity file
-.yarn-integrity
+# Large files
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.bin
 
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
+# Exclude large directories
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
 
-# Next.js build output
-.next
-
-# Nuxt.js build / generate output
-.nuxt
-dist
-
-# Storybook build outputs
-.out
-.storybook-out
-
-# Docker
+# Exclude IDE specific files
+.idea/
+.vscode/
+*.sublime-*
 .dockerignore
 
 # Database
