@@ -1,3 +1,7 @@
+pip>=25.3
+setuptools>=68
+wheel>=0.42
+
 # FastAPI and web framework
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
