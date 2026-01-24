@@ -231,3 +231,6 @@ This platform is designed for **research purposes only** and should **not be use
 ---
 
 **Built with ❤️ for Alzheimer's research and early detection**
+
+
+Mentioned at TAPintoEdison: https://www.tapinto.net/towns/edison/milestones/edison-high-duo-develops-ai-advik-mishra-and-pranav-srinivasan-lead-the-way
